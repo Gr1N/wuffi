@@ -1,6 +1,8 @@
 # wuffi
 
-*Wuffi* is an experiment whose purpose is to develop an approach to the organization of the projects built on the basis of [asyncio](https://docs.python.org/3.5/library/asyncio.html) and [aiohttp](http://aiohttp.readthedocs.org/). *Wuffi* not an framework and never will be.
+*Wuffi* is an experiment whose purpose is to develop an approach to the organization of the projects built on the basis of [asyncio](https://docs.python.org/3.5/library/asyncio.html) and [aiohttp](http://aiohttp.readthedocs.org/).
+
+*Wuffi* not an framework and never will be.
 
 ## Requirements
 
