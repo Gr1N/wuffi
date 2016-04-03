@@ -37,8 +37,12 @@ TBD
     - [ ] Redis
     - [ ] Memcached
 - [ ] Models + Migrations
-- [ ] Generic views (`DetailView`, `FormView`, `ListView`, ...)
-- [ ] Data validation
+- [ ] Generic views
+    - [ ] `DetailView`
+    - [x] `EditView`
+    - [ ] `ListView`
+    - [ ] TBD
+- [x] Data validation
 - [ ] Middlewares
     - [ ] TBD
 - [ ] Authentication + Permissions

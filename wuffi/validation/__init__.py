@@ -41,7 +41,7 @@ class Validator(_Validator):
            ...: }, schema=schema)
         Out[4]: True
 
-        In [5]: print(v.document)
+        In [5]: v.document
         {'name': 'I AM SUPER HERO'}
 
     """
