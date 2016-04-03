@@ -27,7 +27,7 @@ TBD
 ## TODO
 
 - [ ] Project Template
-- [ ] Configuration
+- [x] Configuration
 - [ ] Routing
 - [ ] Databases
     - [ ] PostgreSQL
