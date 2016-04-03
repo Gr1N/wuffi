@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from aiohttp.web_exceptions import HTTPException
+
 from datetime import datetime
 
 __all__ = (
