@@ -6,17 +6,16 @@ __all__ = (
 
 
 async def get_application(loop=None):
-    import importlib
-
     from aiohttp import web
 
     from wuffi.conf import settings
+    from wuffi.helpers.module_loading import import_string
 
     def get_router():
-        return importlib.import_module(settings.ROOT_ROUTESCONF).router
+        return import_string('{}.router'.format(settings.ROOT_ROUTESCONF))
 
     def get_middlewares():
-        return ()
+        return [import_string(func) for func in settings.MIDDLEWARE_FUNCTIONS]
 
     application = web.Application(loop=None,
                                   router=get_router(),
