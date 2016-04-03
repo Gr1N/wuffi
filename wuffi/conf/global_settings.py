@@ -9,3 +9,5 @@ by the `WUFFI_SETTINGS_MODULE` environment variable.
 ####################
 
 DEBUG = True
+
+ROOT_ROUTESCONF = 'core.routes'
