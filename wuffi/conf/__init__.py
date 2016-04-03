@@ -78,18 +78,9 @@ class Settings(BaseSettings):
 
         mod = importlib.import_module(self.SETTINGS_MODULE)
 
-        tuple_settings = ()
-        self._explicit_settings = set()
         for setting in dir(mod):
             if setting.isupper():
-                setting_value = getattr(mod, setting)
-
-                if (setting in tuple_settings and
-                        not isinstance(setting_value, (list, tuple))):
-                    raise ImproperlyConfigured('The %s setting must be a list or a tuple.'
-                                               ' Please fix your settings.' % setting)
-                setattr(self, setting, setting_value)
-                self._explicit_settings.add(setting)
+                setattr(self, setting, getattr(mod, setting))
 
     def __repr__(self):
         return '<%(cls)s "%(settings_module)s">' % {
