@@ -6,12 +6,12 @@ from http import HTTPStatus
 from aiohttp import web
 
 __all__ = (
-    'EditMixin',
-    'EditView',
+    'ValidationMixin',
+    'ValidationView',
 )
 
 
-class EditMixin(object):
+class ValidationMixin(object):
     validator_class = None
     validation_schema = None
 
@@ -61,8 +61,8 @@ class EditMixin(object):
         return web.json_response(data=errors, status=HTTPStatus.BAD_REQUEST)
 
 
-class EditView(EditMixin,
-               web.View):
+class ValidationView(ValidationMixin,
+                     web.View):
     """
     A base view for processing POST requests which requires data validation.
     """

@@ -23,7 +23,7 @@
     - [ ] Redis
     - [ ] Memcached
 - [ ] Generic views
-    - [x] `EditView`
+    - [x] `ValidationView`
     - [ ] `DetailView`
     - [ ] `ListView`
     - [ ] TBD
