@@ -24,34 +24,6 @@ TBD
 
 TBD
 
-## TODO
-
-- [ ] Project Template
-- [x] Configuration
-- [ ] Routing
-- [ ] Databases
-    - [ ] PostgreSQL
-    - [ ] MySQL
-    - [ ] MongoDB
-- [ ] Caches
-    - [ ] Redis
-    - [ ] Memcached
-- [ ] Models + Migrations
-- [ ] Generic views
-    - [ ] `DetailView`
-    - [x] `EditView`
-    - [ ] `ListView`
-    - [ ] TBD
-- [x] Data validation
-- [ ] Middlewares
-    - [ ] TBD
-- [ ] Authentication + Permissions
-- [ ] Logging
-- [ ] Testing
-- [ ] ? MQ handlers (NATS, ...)
-- [ ] ? Templates + Static files
-- [ ] ? Admin site
-
 ## License
 
 *wuffi* is licensed under the MIT license. See the license file for details.
