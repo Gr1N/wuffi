@@ -15,3 +15,19 @@ ROOT_ROUTESCONF = 'config.routes'
 MIDDLEWARE_FUNCTIONS = (
     'wuffi.middleware.stats.middleware_factory',
 )
+
+####################
+# CACHE            #
+####################
+
+CACHES = {
+    # 'default': {
+    #     'BACKEND': 'wuffi.core.cache.backends.redis',
+    #     'HOST': 'localhost',
+    #     'PORT': 6379,
+    #     'PASSWORD': None,
+    #     'DB': 0,
+    #     'POOLSIZE': 1,
+    #     'AUTO_RECONNECT': True,
+    # },
+}

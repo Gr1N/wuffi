@@ -20,7 +20,7 @@
     - [ ] PostgreSQL
     - [ ] MySQL
 - [ ] Caches
-    - [ ] Redis
+    - [x] Redis
     - [ ] Memcached
 - [ ] Generic views
     - [x] `ValidationView`

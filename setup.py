@@ -24,6 +24,9 @@ setup(
         'Cerberus==0.9.2',
     ),
     extras_require={
+        'redis': (
+            'asyncio-redis==0.14.2',
+        ),
     },
     include_package_data=True,
     zip_safe=False,
