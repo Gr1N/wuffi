@@ -30,4 +30,10 @@ CACHES = {
     #     'POOLSIZE': 1,
     #     'AUTO_RECONNECT': True,
     # },
+    # 'default': {
+    #     'BACKEND': 'wuffi.core.cache.backends.memcached',
+    #     'HOST': 'localhost',
+    #     'PORT': 11211,
+    #     'POOLSIZE': 1,
+    # },
 }

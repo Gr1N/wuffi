@@ -24,6 +24,9 @@ setup(
         'Cerberus==0.9.2',
     ),
     extras_require={
+        'memcached': (
+            'aiomcache==0.3.0',
+        ),
         'redis': (
             'asyncio-redis==0.14.2',
         ),

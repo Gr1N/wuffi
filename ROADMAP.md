@@ -19,9 +19,9 @@
 - [ ] Databases
     - [ ] PostgreSQL
     - [ ] MySQL
-- [ ] Caches
+- [x] Caches
     - [x] Redis
-    - [ ] Memcached
+    - [x] Memcached
 - [ ] Generic views
     - [x] `ValidationView`
     - [ ] `DetailView`
