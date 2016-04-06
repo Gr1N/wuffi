@@ -13,7 +13,7 @@ async def connect(host='localhost', port=11211, poolsize=1):
 
     :param host: Address, either host or unix domain socket path
     :type host: str
-    :param port: TCP port. If port is 0 then host assumed to be unix socket path
+    :param port: TCP port.
     :type port: int
     :param poolsize: The number of parallel connections.
     :type poolsize: int

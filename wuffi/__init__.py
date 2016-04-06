@@ -10,6 +10,7 @@ async def get_application(loop=None):
 
     from wuffi.conf import settings
     from wuffi.core.cache import DEFAULT_CACHE_ALIAS, get_caches
+    from wuffi.core.db import DEFAULT_DATABASE_ALIAS, get_databases
     from wuffi.helpers.module_loading import import_string
 
     def get_router():
@@ -22,6 +23,18 @@ async def get_application(loop=None):
                                   router=get_router(),
                                   middlewares=get_middlewares(),
                                   debug=settings.DEBUG)
+
+    # Initialize databases
+    dbs = await get_databases()
+    if dbs:
+        application['dbs'] = dbs
+        application['db'] = dbs[DEFAULT_DATABASE_ALIAS]
+
+        async def close_databases(application):
+            for cache in application['dbs'].values():
+                cache.close()
+
+        application.on_shutdown.append(close_databases)
 
     # Initialize caches
     caches = await get_caches()

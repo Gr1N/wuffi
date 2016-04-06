@@ -27,6 +27,10 @@ setup(
         'memcached': (
             'aiomcache==0.3.0',
         ),
+        'postgresql': (
+            'aiopg==0.9.2',
+            'SQLAlchemy==1.0.12',
+        ),
         'redis': (
             'asyncio-redis==0.14.2',
         ),

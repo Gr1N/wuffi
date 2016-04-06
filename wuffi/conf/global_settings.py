@@ -31,6 +31,22 @@ MIDDLEWARE_HEADERS = {
 }
 
 ####################
+# DATABASE         #
+####################
+
+DATABASES = {
+    # 'default': {
+    #     'BACKEND': 'wuffi.core.db.backends.postgresql',
+    #     'HOST': 'localhost',
+    #     'PORT': 5432,
+    #     'USER': None,
+    #     'PASSWORD': None,
+    #     'DATABASE': None,
+    #     'POOLSIZE': 10,
+    # },
+}
+
+####################
 # CACHE            #
 ####################
 

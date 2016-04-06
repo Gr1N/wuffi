@@ -14,7 +14,7 @@ async def connect(host='localhost', port=6379, password=None, db=0,
 
     :param host: Address, either host or unix domain socket path
     :type host: str
-    :param port: TCP port. If port is 0 then host assumed to be unix socket path
+    :param port: TCP port.
     :type port: int
     :param password: Redis database password
     :type password: bytes
