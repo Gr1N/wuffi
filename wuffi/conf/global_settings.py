@@ -4,6 +4,10 @@ Default `wuffi` settings. Override these with settings in the module pointed to
 by the `WUFFI_SETTINGS_MODULE` environment variable.
 """
 
+import os
+import socket
+from datetime import datetime
+
 ####################
 # CORE             #
 ####################
@@ -12,9 +16,19 @@ DEBUG = True
 
 ROOT_ROUTESCONF = 'config.routes'
 
+####################
+# MIDDLEWARE       #
+####################
+
 MIDDLEWARE_FUNCTIONS = (
-    'wuffi.middleware.stats.middleware_factory',
+    'wuffi.middleware.headers.middleware_factory',
 )
+
+MIDDLEWARE_HEADERS = {
+    'X-Backend-Host': socket.gethostname(),
+    'X-Backend-Pid': os.getpid(),
+    'X-Backend-Start-At': datetime.utcnow().isoformat(),
+}
 
 ####################
 # CACHE            #

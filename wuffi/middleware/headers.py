@@ -2,14 +2,11 @@
 
 from aiohttp.web_exceptions import HTTPException
 
-from datetime import datetime
+from wuffi.conf import settings
 
 __all__ = (
     'middleware_factory',
 )
-
-
-STARTED_AT = datetime.utcnow().isoformat()
 
 
 async def middleware_factory(app, next_handler):
@@ -20,7 +17,8 @@ async def middleware_factory(app, next_handler):
             response = exc
 
         if not response.started:
-            response.headers['X-Server-Started-At'] = STARTED_AT
+            for header, value in settings.MIDDLEWARE_HEADERS.items():
+                response.headers[header] = str(value)
 
         return response
     return middleware
