@@ -14,20 +14,30 @@
 ## 0.1.0
 
 - [ ] Project Template
+- [ ] Auto-reloading functionality for dev env
 - [x] Configuration
-- [ ] Routing
+- [x] Routing
 - [ ] Databases
-    - [ ] PostgreSQL
+    - [x] PostgreSQL
     - [ ] MySQL
 - [x] Caches
     - [x] Redis
     - [x] Memcached
 - [ ] Generic views
     - [x] `ValidationView`
-    - [ ] `DetailView`
+    - [ ] `CreateView`
     - [ ] `ListView`
-    - [ ] TBD
+    - [ ] `RetrieveView`
+    - [ ] `DestroyView`
+    - [ ] `UpdateView`
+    - [ ] `RetrieveUpdateView`
+    - [ ] `RetrieveDestroyView`
+    - [ ] `RetrieveUpdateDestroy`
 - [x] Data validation
 - [ ] Middlewares
-    - [ ] TBD
+    - [x] Debug headers middleware
+    - [ ] Sentry middleware
+    - [ ] Clickjacking protection middleware
+    - [ ] ? CSRF Middleware
+    - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
 - [ ] Logging
