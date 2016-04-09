@@ -37,7 +37,7 @@
 - [ ] Middlewares
     - [x] Debug headers middleware
     - [ ] Sentry middleware
-    - [ ] Clickjacking protection middleware
+    - [x] Clickjacking protection middleware
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
 - [ ] Logging

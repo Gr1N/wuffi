@@ -22,6 +22,7 @@ ROOT_ROUTESCONF = 'config.routes'
 
 MIDDLEWARE_FUNCTIONS = (
     'wuffi.middleware.headers.middleware_factory',
+    'wuffi.middleware.clickjacking.middleware_factory',
 )
 
 MIDDLEWARE_HEADERS = {
@@ -29,6 +30,8 @@ MIDDLEWARE_HEADERS = {
     'X-Backend-Pid': os.getpid(),
     'X-Backend-Start-At': datetime.utcnow().isoformat(),
 }
+
+MIDDLEWARE_CLICKJACKING_X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 ####################
 # DATABASE         #
