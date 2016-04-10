@@ -27,7 +27,7 @@
     - [x] `ValidationView`
     - [ ] `CreateView`
     - [ ] `ListView`
-    - [ ] `RetrieveView`
+    - [x] `RetrieveView`
     - [ ] `DestroyView`
     - [ ] `UpdateView`
     - [ ] `RetrieveUpdateView`
