@@ -31,8 +31,9 @@ async def get_application(loop=None):
         application['db'] = dbs[DEFAULT_DATABASE_ALIAS]
 
         async def close_databases(application):
-            for cache in application['dbs'].values():
-                cache.close()
+            for db in application['dbs'].values():
+                db.close()
+                await db.wait_closed()
 
         application.on_shutdown.append(close_databases)
 
