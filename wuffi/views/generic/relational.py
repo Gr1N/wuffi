@@ -6,6 +6,8 @@ from sqlalchemy import sql as sasql
 from wuffi.core.db import DEFAULT_DATABASE_ALIAS
 
 __all__ = (
+    'RelationalMixin',
+
     'ListMixin',
     'RetrieveMixin',
 
@@ -14,33 +16,15 @@ __all__ = (
 )
 
 
-class ListMixin(object):
+class RelationalMixin(object):
     db_alias = DEFAULT_DATABASE_ALIAS
 
     select = None
     where = None
     order_by = None
 
-    limit_kwarg = 'limit'
-    limit_default = 50
-    offset_kwarg = 'offset'
-    offset_default = 0
-
     def db_connection(self):
         return self.request.app['dbs'][self.db_alias].acquire()
-
-    def get_total(self):
-        # TODO: return total count
-        return -1
-
-    async def get_list(self):
-        query = self.get_query()
-        query = self.paginate_query(query)
-
-        async with self.db_connection() as conn:
-            objs = await (await conn.execute(query)).fetchall()
-
-        return [dict(obj) for obj in objs]
 
     def get_query(self):
         query = sasql.select(self.get_select())
@@ -63,6 +47,27 @@ class ListMixin(object):
 
     def get_order_by(self):
         return self.order_by
+
+
+class ListMixin(RelationalMixin):
+    limit_kwarg = 'limit'
+    limit_default = 50
+    offset_kwarg = 'offset'
+    offset_default = 0
+
+    def get_total(self):
+        # TODO: return total count
+        return -1
+
+    async def get_list(self):
+        query = self.get_query()
+        query = self.paginate_query(query)
+
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            objs = await result.fetchall()
+
+        return [dict(obj) for obj in objs]
 
     def get_pagination(self):
         try:
@@ -88,37 +93,18 @@ class ListMixin(object):
         })
 
 
-class RetrieveMixin(object):
-    db_alias = DEFAULT_DATABASE_ALIAS
-
-    select = None
-    where = None
-
+class RetrieveMixin(RelationalMixin):
     async def get_object(self):
         query = self.get_query()
 
-        async with self.request.app['dbs'][self.db_alias].acquire() as conn:
-            obj = await (await conn.execute(query)).fetchone()
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            obj = await result.fetchone()
 
         if not obj:
             raise web.HTTPNotFound()
 
         return dict(obj)
-
-    def get_query(self):
-        query = sasql.select(self.get_select())
-
-        where = self.get_where()
-        if where is not None:
-            query = query.where(where)
-
-        return query
-
-    def get_select(self):
-        return self.select
-
-    def get_where(self):
-        return self.where
 
     async def details(self):
         obj = await self.get_object()
