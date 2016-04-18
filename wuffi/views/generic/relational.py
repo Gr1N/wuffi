@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
 from http import HTTPStatus
 
 from aiohttp import web
@@ -104,13 +103,9 @@ class RelationalObjectMixin(RelationalMixin):
 class CreateMixin(object):
     async def create(self):
         v = self.get_validator()
+        d = await self.get_document()
 
-        try:
-            document = await self.get_document()
-        except json.JSONDecodeError:
-            document = {}
-
-        if not v.validate(document):
+        if not v.validate(d):
             return web.json_response(data=v.errors, status=HTTPStatus.BAD_REQUEST)
 
         obj = await self.perform_create(v.document)

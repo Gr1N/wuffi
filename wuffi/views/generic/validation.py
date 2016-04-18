@@ -45,7 +45,12 @@ class ValidationMixin(object):
         """
         Returns document to validate in this view.
         """
-        return await self.request.json()
+        try:
+            document = await self.request.json()
+        except json.JSONDecodeError:
+            document = {}
+
+        return document
 
     async def document_valid(self, document):
         """
@@ -72,13 +77,9 @@ class ValidationView(ValidationMixin,
         passed validation scheme and then checked passed document for validity.
         """
         v = self.get_validator()
+        d = await self.get_document()
 
-        try:
-            document = await self.get_document()
-        except json.JSONDecodeError:
-            document = {}
-
-        if not v.validate(document):
+        if not v.validate(d):
             return await self.document_invalid(v.document, v.errors)
 
         return await self.document_valid(v.document)
