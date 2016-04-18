@@ -25,11 +25,12 @@
     - [x] Memcached
 - [ ] Generic views
     - [x] `ValidationView`
-    - [ ] `CreateView`
+    - [x] `CreateView`
     - [x] `ListView`
     - [x] `RetrieveView`
     - [x] `DestroyView`
     - [ ] `UpdateView`
+    - [x] `ListCreateView`
     - [ ] `RetrieveUpdateView`
     - [x] `RetrieveDestroyView`
     - [ ] `RetrieveUpdateDestroy`

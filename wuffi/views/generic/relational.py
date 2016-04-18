@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
 
+import json
 from http import HTTPStatus
 
 from aiohttp import web
 from sqlalchemy import sql as sasql
 
 from wuffi.core.db import DEFAULT_DATABASE_ALIAS
+from wuffi.views.generic.validation import ValidationMixin
 
 __all__ = (
     'RelationalMixin',
     'RelationalObjectMixin',
 
+    'CreateMixin',
     'ListMixin',
     'RetrieveMixin',
     'DestroyMixin',
 
+    'CreateView',
     'ListView',
     'RetrieveView',
     'DestroyView',
+    'ListCreateView',
     'RetrieveDestroyView',
 )
 
@@ -94,6 +99,39 @@ class RelationalObjectMixin(RelationalMixin):
                 self.__class__.__name__, lookup_url_kwarg))
 
         return getattr(self.table.c, self.lookup_field) == url_kwargs[lookup_url_kwarg]
+
+
+class CreateMixin(object):
+    async def create(self):
+        v = self.get_validator()
+
+        try:
+            document = await self.get_document()
+        except json.JSONDecodeError:
+            document = {}
+
+        if not v.validate(document):
+            return web.json_response(data=v.errors, status=HTTPStatus.BAD_REQUEST)
+
+        obj = await self.perform_create(v.document)
+
+        return web.json_response(data=dict(obj), status=HTTPStatus.CREATED,
+                                 headers=self.get_created_headers(obj))
+
+    async def perform_create(self, document):
+        query = self.table.insert().values(
+            **document
+        ).returning(*(self.table.c._all_columns))
+
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            obj = await result.fetchone()
+
+        return obj
+
+    def get_created_headers(self, obj):
+        # TODO: Return `Location` header with path to object
+        return {}
 
 
 class ListMixin(object):
@@ -183,6 +221,14 @@ class DestroyMixin(object):
             await conn.execute(query)
 
 
+class CreateView(RelationalMixin,
+                 ValidationMixin,
+                 CreateMixin,
+                 web.View):
+    async def post(self):
+        return await self.create()
+
+
 class ListView(RelationalMixin,
                ListMixin,
                web.View):
@@ -202,6 +248,18 @@ class DestroyView(RelationalObjectMixin,
                   web.View):
     async def delete(self):
         return await self.destroy()
+
+
+class ListCreateView(RelationalMixin,
+                     ValidationMixin,
+                     ListMixin,
+                     CreateMixin,
+                     web.View):
+    async def get(self):
+        return await self.list()
+
+    async def post(self):
+        return await self.create()
 
 
 class RetrieveDestroyView(RelationalObjectMixin,
