@@ -56,9 +56,9 @@ class RelationalMixin(object):
 
 
 class ListMixin(RelationalMixin):
-    limit_kwarg = 'limit'
+    limit_url_kwarg = 'limit'
     limit_default = 50
-    offset_kwarg = 'offset'
+    offset_url_kwarg = 'offset'
     offset_default = 0
 
     async def get_total(self):
@@ -86,12 +86,12 @@ class ListMixin(RelationalMixin):
 
     def get_pagination(self):
         try:
-            limit = int(self.request.GET.get(self.limit_kwarg))
+            limit = int(self.request.GET.get(self.limit_url_kwarg))
         except Exception:
             limit = self.limit_default
 
         try:
-            offset = int(self.request.GET.get(self.offset_kwarg))
+            offset = int(self.request.GET.get(self.offset_url_kwarg))
         except Exception:
             offset = self.offset_default
 
