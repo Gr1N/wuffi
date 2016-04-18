@@ -26,7 +26,7 @@
 - [ ] Generic views
     - [x] `ValidationView`
     - [ ] `CreateView`
-    - [ ] `ListView`
+    - [x] `ListView`
     - [x] `RetrieveView`
     - [ ] `DestroyView`
     - [ ] `UpdateView`

@@ -19,6 +19,8 @@ __all__ = (
 class RelationalMixin(object):
     db_alias = DEFAULT_DATABASE_ALIAS
 
+    table = None
+
     select = None
     where = None
     order_by = None
@@ -27,7 +29,11 @@ class RelationalMixin(object):
         return self.request.app['dbs'][self.db_alias].acquire()
 
     def get_query(self):
-        query = sasql.select(self.get_select())
+        select = self.get_select()
+        if not isinstance(select, (tuple, list,)):
+            select = (select,)
+
+        query = sasql.select(select)
 
         where = self.get_where()
         if where is not None:
@@ -40,7 +46,7 @@ class RelationalMixin(object):
         return query
 
     def get_select(self):
-        return self.select
+        return self.select or self.table
 
     def get_where(self):
         return self.where
@@ -55,9 +61,18 @@ class ListMixin(RelationalMixin):
     offset_kwarg = 'offset'
     offset_default = 0
 
-    def get_total(self):
-        # TODO: return total count
-        return -1
+    async def get_total(self):
+        query = self.table.count()
+
+        where = self.get_where()
+        if where is not None:
+            query = query.where(where)
+
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            total = await result.fetchone()
+
+        return total[0]
 
     async def get_list(self):
         query = self.get_query()
@@ -67,7 +82,7 @@ class ListMixin(RelationalMixin):
             result = await conn.execute(query)
             objs = await result.fetchall()
 
-        return [dict(obj) for obj in objs]
+        return objs
 
     def get_pagination(self):
         try:
@@ -87,13 +102,23 @@ class ListMixin(RelationalMixin):
         return query.limit(limit).offset(offset)
 
     async def list(self):
+        total = await self.get_total()
+        if not total:
+            return web.json_response(data={
+                'list': [],
+                'total': 0,
+            })
+
         return web.json_response(data={
-            'list': await self.get_list(),
-            'total': self.get_total(),
+            'list': [dict(obj) for obj in await self.get_list()],
+            'total': total,
         })
 
 
 class RetrieveMixin(RelationalMixin):
+    lookup_field = 'id'
+    lookup_url_kwarg = None
+
     async def get_object(self):
         query = self.get_query()
 
@@ -104,10 +129,28 @@ class RetrieveMixin(RelationalMixin):
         if not obj:
             raise web.HTTPNotFound()
 
-        return dict(obj)
+        return obj
+
+    def get_where(self):
+        assert self.lookup_field in self.table.c, (
+            'Expected view {} should be used with table which has lookup'
+            ' field named "{}". Fix your table, or set the `.lookup_field`'
+            ' attribute on the view correctly'.format(
+                self.__class__.__name__, self.lookup_field))
+
+        url_kwargs = self.request.match_info
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in url_kwargs, (
+            'Expected view {} to be called with a URL keyword argument'
+            ' named "{}". Fix your URL conf, or set the `.lookup_field`'
+            ' attribute on the view correctly'.format(
+                self.__class__.__name__, lookup_url_kwarg))
+
+        return getattr(self.table.c, self.lookup_field) == url_kwargs[lookup_url_kwarg]
 
     async def details(self):
-        obj = await self.get_object()
+        obj = dict(await self.get_object())
 
         return web.json_response(data=obj)
 
