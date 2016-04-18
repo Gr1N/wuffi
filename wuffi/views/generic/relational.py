@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from http import HTTPStatus
+
 from aiohttp import web
 from sqlalchemy import sql as sasql
 
@@ -7,12 +9,16 @@ from wuffi.core.db import DEFAULT_DATABASE_ALIAS
 
 __all__ = (
     'RelationalMixin',
+    'RelationalObjectMixin',
 
     'ListMixin',
     'RetrieveMixin',
+    'DestroyMixin',
 
     'ListView',
     'RetrieveView',
+    'DestroyView',
+    'RetrieveDestroyView',
 )
 
 
@@ -55,7 +61,42 @@ class RelationalMixin(object):
         return self.order_by
 
 
-class ListMixin(RelationalMixin):
+class RelationalObjectMixin(RelationalMixin):
+    lookup_field = 'id'
+    lookup_url_kwarg = None
+
+    async def get_object(self):
+        query = self.get_query()
+
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            obj = await result.fetchone()
+
+        if not obj:
+            raise web.HTTPNotFound()
+
+        return obj
+
+    def get_where(self):
+        assert self.lookup_field in self.table.c, (
+            'Expected view {} should be used with table which has lookup'
+            ' field named "{}". Fix your table, or set the `.lookup_field`'
+            ' attribute on the view correctly'.format(
+                self.__class__.__name__, self.lookup_field))
+
+        url_kwargs = self.request.match_info
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+
+        assert lookup_url_kwarg in url_kwargs, (
+            'Expected view {} to be called with a URL keyword argument'
+            ' named "{}". Fix your URL conf, or set the `.lookup_field`'
+            ' attribute on the view correctly'.format(
+                self.__class__.__name__, lookup_url_kwarg))
+
+        return getattr(self.table.c, self.lookup_field) == url_kwargs[lookup_url_kwarg]
+
+
+class ListMixin(object):
     limit_url_kwarg = 'limit'
     limit_default = 50
     offset_url_kwarg = 'offset'
@@ -115,53 +156,60 @@ class ListMixin(RelationalMixin):
         })
 
 
-class RetrieveMixin(RelationalMixin):
-    lookup_field = 'id'
-    lookup_url_kwarg = None
-
-    async def get_object(self):
-        query = self.get_query()
-
-        async with self.db_connection() as conn:
-            result = await conn.execute(query)
-            obj = await result.fetchone()
-
-        if not obj:
-            raise web.HTTPNotFound()
-
-        return obj
-
-    def get_where(self):
-        assert self.lookup_field in self.table.c, (
-            'Expected view {} should be used with table which has lookup'
-            ' field named "{}". Fix your table, or set the `.lookup_field`'
-            ' attribute on the view correctly'.format(
-                self.__class__.__name__, self.lookup_field))
-
-        url_kwargs = self.request.match_info
-        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-
-        assert lookup_url_kwarg in url_kwargs, (
-            'Expected view {} to be called with a URL keyword argument'
-            ' named "{}". Fix your URL conf, or set the `.lookup_field`'
-            ' attribute on the view correctly'.format(
-                self.__class__.__name__, lookup_url_kwarg))
-
-        return getattr(self.table.c, self.lookup_field) == url_kwargs[lookup_url_kwarg]
-
+class RetrieveMixin(object):
     async def details(self):
         obj = dict(await self.get_object())
 
         return web.json_response(data=obj)
 
 
-class ListView(ListMixin,
+class DestroyMixin(object):
+    async def destroy(self):
+        # Try to find object with specified primary key,
+        # if object not found, then 404 exception raises
+        await self.get_object()
+        await self.perform_destroy()
+
+        return web.json_response(status=HTTPStatus.NO_CONTENT)
+
+    async def perform_destroy(self):
+        query = self.table.delete()
+
+        where = self.get_where()
+        if where is not None:
+            query = query.where(where)
+
+        async with self.db_connection() as conn:
+            await conn.execute(query)
+
+
+class ListView(RelationalMixin,
+               ListMixin,
                web.View):
     async def get(self):
         return await self.list()
 
 
-class RetrieveView(RetrieveMixin,
+class RetrieveView(RelationalObjectMixin,
+                   RetrieveMixin,
                    web.View):
     async def get(self):
         return await self.details()
+
+
+class DestroyView(RelationalObjectMixin,
+                  DestroyMixin,
+                  web.View):
+    async def delete(self):
+        return await self.destroy()
+
+
+class RetrieveDestroyView(RelationalObjectMixin,
+                          RetrieveMixin,
+                          DestroyMixin,
+                          web.View):
+    async def get(self):
+        return await self.details()
+
+    async def delete(self):
+        return await self.destroy()

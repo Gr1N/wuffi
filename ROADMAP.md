@@ -28,10 +28,10 @@
     - [ ] `CreateView`
     - [x] `ListView`
     - [x] `RetrieveView`
-    - [ ] `DestroyView`
+    - [x] `DestroyView`
     - [ ] `UpdateView`
     - [ ] `RetrieveUpdateView`
-    - [ ] `RetrieveDestroyView`
+    - [x] `RetrieveDestroyView`
     - [ ] `RetrieveUpdateDestroy`
 - [x] Data validation
 - [ ] Middlewares
