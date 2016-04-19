@@ -35,19 +35,23 @@ class UrlDispatcher(web_urldispatcher.UrlDispatcher):
         router.include_routes('/todo', 'apps.todo.routes')
     """
 
-    def include_routes(self, path, router):
+    def include_routes(self, path, router, namespace=None):
         if not path.startswith('/'):
             raise ValueError('path should be started with /')
         elif path.endswith('/'):
             raise ValueError('path should not be ended with /')
 
-        router = import_string('{}.router'.format(router))
+        if isinstance(router, str):
+            router = import_string('{}.router'.format(router))
 
         # include `resources`
         self._resources.extend(self._to_include(path, *router._resources))
 
         # include `named_resources`
         for name, resource in router._named_resources.items():
+            if namespace is not None:
+                name = '{}:{}'.format(namespace, name)
+
             if name in self._named_resources:
                 raise ValueError('Duplicate {!r}, '
                                  'already handled by {!r}'
