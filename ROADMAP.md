@@ -33,6 +33,7 @@
     - [x] `RetrieveUpdateView`
     - [x] `RetrieveDestroyView`
     - [x] `RetrieveUpdateDestroyView`
+    - [ ] `TemplateView`
 - [x] Data validation
 - [ ] Middlewares
     - [x] Debug headers middleware
@@ -41,4 +42,3 @@
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
 - [ ] Logging
-- [ ] Templates + Static files
