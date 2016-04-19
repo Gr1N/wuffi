@@ -27,6 +27,10 @@ setup(
         'memcached': (
             'aiomcache==0.3.0',
         ),
+        'mysql': (
+            'aiomysql==0.0.7',
+            'SQLAlchemy==1.0.12',
+        ),
         'postgresql': (
             'aiopg==0.9.2',
             'SQLAlchemy==1.0.12',

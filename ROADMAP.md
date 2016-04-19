@@ -4,11 +4,9 @@
 
 - [ ] Databases
     - [ ] MongoDB
-- [ ] Migrations
 - [ ] Authentication + Permissions
 - [ ] Testing
 - [ ] MQ handlers (NATS, ...)
-- [ ] Templates + Static files
 - [ ] ? Admin site
 
 ## 0.1.0
@@ -17,9 +15,10 @@
 - [ ] Auto-reloading functionality for dev env
 - [x] Configuration
 - [x] Routing
-- [ ] Databases
+- [x] Databases
     - [x] PostgreSQL
-    - [ ] MySQL
+    - [x] MySQL (Note: `CreateMixin` and `UpdateMixin` from generic views not supported yet)
+- [ ] Migrations
 - [x] Caches
     - [x] Redis
     - [x] Memcached
@@ -42,3 +41,4 @@
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
 - [ ] Logging
+- [ ] Templates + Static files

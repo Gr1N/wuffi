@@ -47,6 +47,16 @@ DATABASES = {
     #     'DATABASE': None,
     #     'POOLSIZE': 10,
     # },
+    # 'default': {
+    #     'BACKEND': 'wuffi.core.db.backends.mysql',
+    #     'HOST': 'localhost',
+    #     'PORT': 3306,
+    #     'USER': None,
+    #     'PASSWORD': None,
+    #     'DATABASE': None,
+    #     'POOLSIZE': 10,
+    #     'AUTOCOMMIT': True,
+    # },
 }
 
 ####################
