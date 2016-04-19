@@ -31,6 +31,10 @@ __all__ = (
 
 
 class RelationalMixin(object):
+    """
+    Base class for all other relational views.
+    """
+
     db_alias = DEFAULT_DATABASE_ALIAS
 
     table = None
@@ -70,6 +74,10 @@ class RelationalMixin(object):
 
 
 class RelationalObjectMixin(RelationalMixin):
+    """
+    Base class for all other relational views that manipulate objects.
+    """
+
     lookup_field = 'id'
     lookup_url_kwarg = None
 
@@ -105,6 +113,10 @@ class RelationalObjectMixin(RelationalMixin):
 
 
 class CreateMixin(object):
+    """
+    Create object.
+    """
+
     async def create(self):
         v = self.get_validator()
         d = await self.get_document()
@@ -129,11 +141,14 @@ class CreateMixin(object):
         return obj
 
     def get_created_headers(self, obj):
-        # TODO: Return `Location` header with path to object
         return {}
 
 
 class ListMixin(object):
+    """
+    List a queryset.
+    """
+
     limit_url_kwarg = 'limit'
     limit_default = 50
     offset_url_kwarg = 'offset'
@@ -194,6 +209,10 @@ class ListMixin(object):
 
 
 class RetrieveMixin(object):
+    """
+    Retrieve object.
+    """
+
     async def details(self):
         obj = dict(await self.get_object())
 
@@ -201,6 +220,10 @@ class RetrieveMixin(object):
 
 
 class UpdateMixin(object):
+    """
+    Update object.
+    """
+
     async def update(self):
         # Try to find object with specified primary key,
         # if object not found, then 404 exception raises
@@ -235,6 +258,10 @@ class UpdateMixin(object):
 
 
 class DestroyMixin(object):
+    """
+    Destroy object.
+    """
+
     async def destroy(self):
         # Try to find object with specified primary key,
         # if object not found, then 404 exception raises
@@ -258,6 +285,10 @@ class CreateView(RelationalMixin,
                  ValidationMixin,
                  CreateMixin,
                  web.View):
+    """
+    Concrete view for creating objects.
+    """
+
     async def post(self):
         return await self.create()
 
@@ -265,6 +296,10 @@ class CreateView(RelationalMixin,
 class ListView(RelationalMixin,
                ListMixin,
                web.View):
+    """
+    Concrete view for listing a queryset.
+    """
+
     async def get(self):
         return await self.list()
 
@@ -272,6 +307,10 @@ class ListView(RelationalMixin,
 class RetrieveView(RelationalObjectMixin,
                    RetrieveMixin,
                    web.View):
+    """
+    Concrete view for retrieving objects.
+    """
+
     async def get(self):
         return await self.details()
 
@@ -280,6 +319,10 @@ class UpdateView(RelationalObjectMixin,
                  ValidationMixin,
                  UpdateMixin,
                  web.View):
+    """
+    Concrete view for updating objects.
+    """
+
     async def put(self):
         return await self.update()
 
@@ -287,6 +330,10 @@ class UpdateView(RelationalObjectMixin,
 class DestroyView(RelationalObjectMixin,
                   DestroyMixin,
                   web.View):
+    """
+    Concrete view for deleting objects.
+    """
+
     async def delete(self):
         return await self.destroy()
 
@@ -296,6 +343,10 @@ class ListCreateView(RelationalMixin,
                      ListMixin,
                      CreateMixin,
                      web.View):
+    """
+    Concrete view for listing a queryset or creating objects.
+    """
+
     async def get(self):
         return await self.list()
 
@@ -308,6 +359,10 @@ class RetrieveUpdateView(RelationalObjectMixin,
                          RetrieveMixin,
                          UpdateMixin,
                          web.View):
+    """
+    Concrete view for retrieving or updating objects.
+    """
+
     async def get(self):
         return await self.details()
 
@@ -319,6 +374,10 @@ class RetrieveDestroyView(RelationalObjectMixin,
                           RetrieveMixin,
                           DestroyMixin,
                           web.View):
+    """
+    Concrete view for retrieving or deleting objects.
+    """
+
     async def get(self):
         return await self.details()
 
@@ -332,6 +391,10 @@ class RetrieveUpdateDestroyView(RelationalObjectMixin,
                                 UpdateMixin,
                                 DestroyMixin,
                                 web.View):
+    """
+    Concrete view for retrieving, updating or deleting objects.
+    """
+
     async def get(self):
         return await self.details()
 
