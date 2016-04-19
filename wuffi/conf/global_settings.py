@@ -59,7 +59,7 @@ CACHES = {
     #     'HOST': 'localhost',
     #     'PORT': 6379,
     #     'PASSWORD': None,
-    #     'DB': 0,
+    #     'DATABASE': 0,
     #     'POOLSIZE': 1,
     #     'AUTO_RECONNECT': True,
     # },
