@@ -29,11 +29,11 @@
     - [x] `ListView`
     - [x] `RetrieveView`
     - [x] `DestroyView`
-    - [ ] `UpdateView`
+    - [x] `UpdateView`
     - [x] `ListCreateView`
-    - [ ] `RetrieveUpdateView`
+    - [x] `RetrieveUpdateView`
     - [x] `RetrieveDestroyView`
-    - [ ] `RetrieveUpdateDestroy`
+    - [x] `RetrieveUpdateDestroyView`
 - [x] Data validation
 - [ ] Middlewares
     - [x] Debug headers middleware

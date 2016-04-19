@@ -15,14 +15,18 @@ __all__ = (
     'CreateMixin',
     'ListMixin',
     'RetrieveMixin',
+    'UpdateMixin',
     'DestroyMixin',
 
     'CreateView',
     'ListView',
     'RetrieveView',
+    'UpdateView',
     'DestroyView',
     'ListCreateView',
+    'RetrieveUpdateView',
     'RetrieveDestroyView',
+    'RetrieveUpdateDestroyView',
 )
 
 
@@ -196,6 +200,40 @@ class RetrieveMixin(object):
         return web.json_response(data=obj)
 
 
+class UpdateMixin(object):
+    async def update(self):
+        # Try to find object with specified primary key,
+        # if object not found, then 404 exception raises
+        await self.get_object()
+
+        v = self.get_validator()
+        d = await self.get_document()
+
+        if not v.validate(d):
+            return web.json_response(data=v.errors, status=HTTPStatus.BAD_REQUEST)
+
+        obj = await self.perform_update(v.document)
+
+        return web.json_response(data=dict(obj))
+
+    async def perform_update(self, document):
+        query = self.table.update()
+
+        where = self.get_where()
+        if where is not None:
+            query = query.where(where)
+
+        query = query.values(
+            **document
+        ).returning(*(self.table.c._all_columns))
+
+        async with self.db_connection() as conn:
+            result = await conn.execute(query)
+            obj = await result.fetchone()
+
+        return obj
+
+
 class DestroyMixin(object):
     async def destroy(self):
         # Try to find object with specified primary key,
@@ -238,6 +276,14 @@ class RetrieveView(RelationalObjectMixin,
         return await self.details()
 
 
+class UpdateView(RelationalObjectMixin,
+                 ValidationMixin,
+                 UpdateMixin,
+                 web.View):
+    async def put(self):
+        return await self.update()
+
+
 class DestroyView(RelationalObjectMixin,
                   DestroyMixin,
                   web.View):
@@ -257,12 +303,40 @@ class ListCreateView(RelationalMixin,
         return await self.create()
 
 
+class RetrieveUpdateView(RelationalObjectMixin,
+                         ValidationMixin,
+                         RetrieveMixin,
+                         UpdateMixin,
+                         web.View):
+    async def get(self):
+        return await self.details()
+
+    async def put(self):
+        return await self.update()
+
+
 class RetrieveDestroyView(RelationalObjectMixin,
                           RetrieveMixin,
                           DestroyMixin,
                           web.View):
     async def get(self):
         return await self.details()
+
+    async def delete(self):
+        return await self.destroy()
+
+
+class RetrieveUpdateDestroyView(RelationalObjectMixin,
+                                ValidationMixin,
+                                RetrieveMixin,
+                                UpdateMixin,
+                                DestroyMixin,
+                                web.View):
+    async def get(self):
+        return await self.details()
+
+    async def put(self):
+        return await self.update()
 
     async def delete(self):
         return await self.destroy()
