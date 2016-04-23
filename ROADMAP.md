@@ -41,4 +41,6 @@
     - [x] Clickjacking protection middleware
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
+    - [ ] Session middleware
 - [ ] Logging
+- [ ] Deployment
