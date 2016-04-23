@@ -12,6 +12,7 @@ async def get_application(loop=None):
     from wuffi.core.cache import DEFAULT_CACHE_ALIAS, get_caches
     from wuffi.core.db import DEFAULT_DATABASE_ALIAS, get_databases
     from wuffi.helpers.module_loading import import_string
+    from wuffi.template import setup_templates
 
     def get_router():
         return import_string('{}.router'.format(settings.ROOT_ROUTESCONF))
@@ -19,34 +20,37 @@ async def get_application(loop=None):
     def get_middlewares():
         return [import_string(func) for func in settings.MIDDLEWARE_FUNCTIONS]
 
-    application = web.Application(loop=None,
-                                  router=get_router(),
-                                  middlewares=get_middlewares(),
-                                  debug=settings.DEBUG)
+    app = web.Application(loop=None,
+                          router=get_router(),
+                          middlewares=get_middlewares(),
+                          debug=settings.DEBUG)
+
+    # Initialize template engine
+    setup_templates(app)
 
     # Initialize databases
     dbs = await get_databases()
     if dbs:
-        application['dbs'] = dbs
-        application['db'] = dbs[DEFAULT_DATABASE_ALIAS]
+        app['dbs'] = dbs
+        app['db'] = dbs[DEFAULT_DATABASE_ALIAS]
 
-        async def close_databases(application):
-            for db in application['dbs'].values():
+        async def close_databases(app):
+            for db in app['dbs'].values():
                 db.close()
                 await db.wait_closed()
 
-        application.on_shutdown.append(close_databases)
+        app.on_shutdown.append(close_databases)
 
     # Initialize caches
     caches = await get_caches()
     if caches:
-        application['caches'] = caches
-        application['cache'] = caches[DEFAULT_CACHE_ALIAS]
+        app['caches'] = caches
+        app['cache'] = caches[DEFAULT_CACHE_ALIAS]
 
-        async def close_caches(application):
-            for cache in application['caches'].values():
+        async def close_caches(app):
+            for cache in app['caches'].values():
                 cache.close()
 
-        application.on_shutdown.append(close_caches)
+        app.on_shutdown.append(close_caches)
 
-    return application
+    return app

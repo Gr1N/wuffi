@@ -80,3 +80,13 @@ CACHES = {
     #     'POOLSIZE': 1,
     # },
 }
+
+####################
+# TEMPLATES        #
+####################
+
+TEMPLATES = {
+    # 'DIRS': [
+    #     'apps/app_name/templates/'
+    # ],
+}

@@ -22,7 +22,7 @@
 - [x] Caches
     - [x] Redis
     - [x] Memcached
-- [ ] Generic views
+- [x] Generic views
     - [x] `ValidationView`
     - [x] `CreateView`
     - [x] `ListView`
@@ -33,7 +33,7 @@
     - [x] `RetrieveUpdateView`
     - [x] `RetrieveDestroyView`
     - [x] `RetrieveUpdateDestroyView`
-    - [ ] `TemplateView`
+    - [x] `TemplateView`
 - [x] Data validation
 - [ ] Middlewares
     - [x] Debug headers middleware

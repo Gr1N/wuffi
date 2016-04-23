@@ -21,7 +21,9 @@ setup(
     )),
     install_requires=(
         'aiohttp==0.21.5',
+        'aiohttp-jinja2==0.7.0',
         'Cerberus==0.9.2',
+        'SQLAlchemy==1.0.12',
     ),
     extras_require={
         'memcached': (
@@ -29,11 +31,9 @@ setup(
         ),
         'mysql': (
             'aiomysql==0.0.7',
-            'SQLAlchemy==1.0.12',
         ),
         'postgresql': (
             'aiopg==0.9.2',
-            'SQLAlchemy==1.0.12',
         ),
         'redis': (
             'asyncio-redis==0.14.2',
