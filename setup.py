@@ -22,6 +22,7 @@ setup(
     install_requires=(
         'aiohttp==0.21.5',
         'aiohttp-jinja2==0.7.0',
+        'alembic==0.8.6',
         'Cerberus==0.9.2',
         'SQLAlchemy==1.0.12',
     ),

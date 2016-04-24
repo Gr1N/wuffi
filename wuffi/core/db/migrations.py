@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import logging
+import logging.config
 
 import sqlalchemy as sa
+from alembic import context
 
 from wuffi.conf import settings
 from wuffi.core.db import DEFAULT_DATABASE_ALIAS
@@ -11,9 +14,46 @@ __all__ = (
     'target_url',
     'target_metadata',
 
+    'run',
     'run_offline',
     'run_online',
 )
+
+
+# Custom logging settings, should be used only in migrations scripts
+MIGRATIONS_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'generic': {
+            'format': '%(levelname)-5.5s [%(name)s] %(message)s',
+            'datefmt': '%H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'NOTSET',
+            'class': 'logging.StreamHandler',
+            'formatter': 'generic',
+        },
+    },
+    'loggers': {
+        'root': {
+            'handlers': ('console',),
+            'level': 'WARN',
+        },
+        'sqlalchemy': {
+            'handlers': ('console',),
+            'level': 'WARN',
+            'qualname': 'sqlalchemy.engine',
+        },
+        'alembic': {
+            'handlers': ('console',),
+            'level': 'INFO',
+            'qualname': 'alembic',
+        },
+    },
+}
 
 
 def target_url():
@@ -54,8 +94,21 @@ def target_metadata():
     return m
 
 
+def run():
+    """
+    Run migrations.
+    """
+    logging.config.dictConfig(MIGRATIONS_LOGGING)
+
+    if context.is_offline_mode():
+        run_offline(context)
+    else:
+        run_online(context)
+
+
 def run_offline(context):
-    """Run migrations in 'offline' mode.
+    """
+    Run migrations in 'offline' mode.
 
     This configures the context with just a URL
     and not an Engine, though an Engine is acceptable
@@ -75,7 +128,8 @@ def run_offline(context):
 
 
 def run_online(context):
-    """Run migrations in 'online' mode.
+    """
+    Run migrations in 'online' mode.
 
     In this scenario we need to create an Engine
     and associate a connection with the context.
