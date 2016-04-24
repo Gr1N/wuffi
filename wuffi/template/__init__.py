@@ -8,11 +8,11 @@ import jinja2
 from wuffi.conf import settings
 
 __all__ = (
-    'setup_templates',
+    'configure_templates',
 )
 
 
-def setup_templates(app):
+def configure_templates(app):
     """
     Initializes jinja2 environment.
     """

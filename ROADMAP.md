@@ -42,5 +42,5 @@
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)
     - [ ] Session middleware
-- [ ] Logging
+- [x] Logging
 - [ ] Deployment
