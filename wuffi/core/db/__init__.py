@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import io
-
-import sqlalchemy
-
 from wuffi.conf import settings
 from wuffi.core.exceptions import ImproperlyConfigured
 from wuffi.helpers.module_loading import import_string
@@ -43,27 +39,3 @@ async def get_databases():
         dbs[alias] = await backend(**options)
 
     return dbs
-
-
-def _get_database_mock(backend):
-    buf = io.StringIO()
-
-    def dump(sql, *args, **kwargs):
-        buf.write(str(sql.compile(dialect=engine.dialect)))
-
-    engine = sqlalchemy.create_engine('{}://'.format(backend), echo=True,
-                                      strategy='mock', executor=dump)
-
-    return buf, engine
-
-
-def generate_sql_create(metadata, backend):
-    buf, engine = _get_database_mock()
-    metadata.create_all(engine)
-    return buf.getvalue()
-
-
-def generate_sql_drop(metadata, backend):
-    buf, engine = _get_database_mock()
-    metadata.drop_all(engine)
-    return buf.getvalue()

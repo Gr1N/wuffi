@@ -18,7 +18,7 @@
 - [x] Databases
     - [x] PostgreSQL
     - [x] MySQL (Note: `CreateMixin` and `UpdateMixin` from generic views not supported yet)
-- [ ] Migrations
+- [x] Migrations
 - [x] Caches
     - [x] Redis
     - [x] Memcached
