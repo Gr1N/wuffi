@@ -39,6 +39,10 @@ setup(
         'redis': (
             'asyncio-redis==0.14.2',
         ),
+        'sentry': (
+            'raven==5.13.0',
+            'raven-aiohttp==0.2.0',
+        ),
     },
     include_package_data=True,
     zip_safe=False,

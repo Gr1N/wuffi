@@ -37,7 +37,7 @@
 - [x] Data validation
 - [ ] Middlewares
     - [x] Debug headers middleware
-    - [ ] Sentry middleware
+    - [x] Sentry middleware
     - [x] Clickjacking protection middleware
     - [ ] ? CSRF Middleware
     - [ ] Security middleware (`django.middleware.security.SecurityMiddleware`)

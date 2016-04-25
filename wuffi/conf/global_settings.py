@@ -33,6 +33,13 @@ MIDDLEWARE_HEADERS = {
 
 MIDDLEWARE_CLICKJACKING_X_FRAME_OPTIONS = 'SAMEORIGIN'
 
+MIDDLEWARE_SENTRY = {
+    'dsn': None,
+    'tags': None,
+    'exclude_paths': None,
+    'processors': None,
+}
+
 ####################
 # DATABASE         #
 ####################
